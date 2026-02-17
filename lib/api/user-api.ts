@@ -20,6 +20,15 @@ function getAuthToken(): string | null {
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({ error: "Unknown error" }));
+    
+    // Debug: Log error details
+    console.error('❌ API Error:', {
+      status: response.status,
+      statusText: response.statusText,
+      url: response.url,
+      errorData
+    });
+    
     throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
   }
   return response.json();
@@ -40,6 +49,7 @@ function getHeaders(): HeadersInit {
 export const userApi = {
   // Create a new user
   async createUser(userData: CreateUserRequest): Promise<User> {
+    console.log('🚀 POST /api/admin/users', { userData });
     const response = await fetch(ADMIN_USERS_ENDPOINT, {
       method: "POST",
       headers: getHeaders(),
@@ -58,6 +68,7 @@ export const userApi = {
       ? `${ADMIN_USERS_ENDPOINT}?${queryParams}`
       : ADMIN_USERS_ENDPOINT;
 
+    console.log('🚀 GET', url, { filters });
     const response = await fetch(url, {
       method: "GET",
       headers: getHeaders(),
@@ -67,6 +78,7 @@ export const userApi = {
 
   // Get user by ID
   async getUserById(id: number): Promise<User> {
+    console.log('🚀 GET /api/admin/users/:id', { id });
     const response = await fetch(`${ADMIN_USERS_ENDPOINT}/${id}`, {
       method: "GET",
       headers: getHeaders(),
@@ -76,6 +88,7 @@ export const userApi = {
 
   // Get user by username
   async getUserByUsername(username: string): Promise<User> {
+    console.log('🚀 GET /api/admin/users/username/:username', { username });
     const response = await fetch(`${ADMIN_USERS_ENDPOINT}/username/${username}`, {
       method: "GET",
       headers: getHeaders(),
@@ -85,6 +98,7 @@ export const userApi = {
 
   // Get users by role
   async getUsersByRole(role: UserRole): Promise<User[]> {
+    console.log('🚀 GET /api/admin/users/role/:role', { role });
     const response = await fetch(`${ADMIN_USERS_ENDPOINT}/role/${role}`, {
       method: "GET",
       headers: getHeaders(),
@@ -94,6 +108,7 @@ export const userApi = {
 
   // Get active users
   async getActiveUsers(): Promise<User[]> {
+    console.log('🚀 GET /api/admin/users/active');
     const response = await fetch(`${ADMIN_USERS_ENDPOINT}/active`, {
       method: "GET",
       headers: getHeaders(),
@@ -103,6 +118,7 @@ export const userApi = {
 
   // Get inactive users
   async getInactiveUsers(): Promise<User[]> {
+    console.log('🚀 GET /api/admin/users/inactive');
     const response = await fetch(`${ADMIN_USERS_ENDPOINT}/inactive`, {
       method: "GET",
       headers: getHeaders(),
@@ -112,6 +128,7 @@ export const userApi = {
 
   // Get user statistics
   async getUserStatistics(): Promise<UserStatistics> {
+    console.log('🚀 GET /api/admin/users/statistics');
     const response = await fetch(`${ADMIN_USERS_ENDPOINT}/statistics`, {
       method: "GET",
       headers: getHeaders(),
@@ -121,6 +138,7 @@ export const userApi = {
 
   // Update user
   async updateUser(id: number, userData: UpdateUserRequest): Promise<User> {
+    console.log('🚀 PUT /api/admin/users/:id', { id, userData });
     const response = await fetch(`${ADMIN_USERS_ENDPOINT}/${id}`, {
       method: "PUT",
       headers: getHeaders(),
@@ -131,6 +149,7 @@ export const userApi = {
 
   // Change user password
   async changePassword(id: number, passwordData: ChangePasswordRequest): Promise<{ message: string }> {
+    console.log('🚀 PUT /api/admin/users/:id/password', { id });
     const response = await fetch(`${ADMIN_USERS_ENDPOINT}/${id}/password`, {
       method: "PUT",
       headers: getHeaders(),
@@ -141,6 +160,7 @@ export const userApi = {
 
   // Activate user
   async activateUser(id: number): Promise<User> {
+    console.log('🚀 POST /api/admin/users/:id/activate', { id });
     const response = await fetch(`${ADMIN_USERS_ENDPOINT}/${id}/activate`, {
       method: "POST",
       headers: getHeaders(),
@@ -150,6 +170,7 @@ export const userApi = {
 
   // Deactivate user
   async deactivateUser(id: number): Promise<User> {
+    console.log('🚀 POST /api/admin/users/:id/deactivate', { id });
     const response = await fetch(`${ADMIN_USERS_ENDPOINT}/${id}/deactivate`, {
       method: "POST",
       headers: getHeaders(),
@@ -159,6 +180,7 @@ export const userApi = {
 
   // Delete user
   async deleteUser(id: number): Promise<{ message: string }> {
+    console.log('🚀 DELETE /api/admin/users/:id', { id });
     const response = await fetch(`${ADMIN_USERS_ENDPOINT}/${id}`, {
       method: "DELETE",
       headers: getHeaders(),

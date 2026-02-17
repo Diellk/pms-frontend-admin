@@ -29,23 +29,37 @@ function getHeaders(): HeadersInit {
   }
 }
 
+// Helper function to handle API responses
+async function handleResponse<T>(response: Response): Promise<T> {
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ error: "Unknown error" }))
+    
+    // Debug: Log error details
+    console.error('❌ API Error:', {
+      status: response.status,
+      statusText: response.statusText,
+      url: response.url,
+      error
+    });
+    
+    throw new Error(error.error || "Failed to complete request")
+  }
+  return response.json()
+}
+
 // Room Type API Endpoints
 
 export const roomTypeApi = {
   // Create room type
   async createRoomType(request: CreateRoomTypeRequest): Promise<RoomType> {
+    console.log('🚀 POST /api/admin/room-types', { request });
     const response = await fetch(`${API_BASE_URL}/api/admin/room-types`, {
       method: "POST",
       headers: getHeaders(),
       body: JSON.stringify(request)
     })
 
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.error || "Failed to create room type")
-    }
-
-    return response.json()
+    return handleResponse<RoomType>(response)
   },
 
   // Get all room types

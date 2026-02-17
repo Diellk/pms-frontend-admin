@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/lib/contexts/auth-context";
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { Header } from "@/components/layout/header";
+import { ApiConfigLogger } from "@/components/debug/api-config-logger";
 
 const notoSans = Noto_Sans({variable:'--font-sans'});
 
@@ -32,6 +33,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <ApiConfigLogger />
         <AuthProvider>
           <ProtectedRoute>
             <Header />

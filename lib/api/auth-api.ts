@@ -7,6 +7,15 @@ const AUTH_ENDPOINT = `${API_BASE_URL}/api/auth`;
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({ error: "Unknown error" }));
+    
+    // Debug: Log error details
+    console.error('❌ API Error:', {
+      status: response.status,
+      statusText: response.statusText,
+      url: response.url,
+      errorData
+    });
+    
     throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
   }
   return response.json();
@@ -15,6 +24,7 @@ async function handleResponse<T>(response: Response): Promise<T> {
 export const authApi = {
   // Login user
   async login(credentials: LoginRequest): Promise<LoginResponse> {
+    console.log('🚀 POST /api/auth/login', { username: credentials.username });
     const response = await fetch(`${AUTH_ENDPOINT}/login`, {
       method: "POST",
       headers: {
@@ -27,6 +37,7 @@ export const authApi = {
 
   // Validate token
   async validateToken(token: string): Promise<ValidateTokenResponse> {
+    console.log('🚀 POST /api/auth/validate');
     const response = await fetch(`${AUTH_ENDPOINT}/validate`, {
       method: "POST",
       headers: {
@@ -38,6 +49,7 @@ export const authApi = {
 
   // Get current user
   async getCurrentUser(token: string): Promise<CurrentUser> {
+    console.log('🚀 GET /api/auth/me');
     const response = await fetch(`${AUTH_ENDPOINT}/me`, {
       method: "GET",
       headers: {

@@ -19,6 +19,15 @@ function getAuthToken(): string | null {
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({ error: "Unknown error" }));
+    
+    // Debug: Log error details
+    console.error('❌ API Error:', {
+      status: response.status,
+      statusText: response.statusText,
+      url: response.url,
+      errorData
+    });
+    
     throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
   }
   return response.json();
