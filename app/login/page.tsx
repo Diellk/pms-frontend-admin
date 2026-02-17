@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Hotel, Lock } from "lucide-react"
+import { Hotel, Lock, Info } from "lucide-react"
 
 export default function LoginPage() {
   const { login } = useAuth()
@@ -14,6 +14,11 @@ export default function LoginPage() {
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const fillDemoCredentials = () => {
+    setUsername("admin")
+    setPassword("admin123")
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -46,6 +51,32 @@ export default function LoginPage() {
           </div>
         </CardHeader>
         <CardContent>
+          {/* Demo Credentials Banner */}
+          <div className="mb-6 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+            <div className="flex items-start gap-3">
+              <Info className="size-5 text-blue-600 dark:text-blue-400 mt-0.5 shrink-0" />
+              <div className="flex-1 space-y-2">
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                  Demo Credentials
+                </p>
+                <div className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+                  <p><span className="font-semibold">Username:</span> admin</p>
+                  <p><span className="font-semibold">Password:</span> admin123</p>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={fillDemoCredentials}
+                  disabled={loading}
+                  className="mt-2 bg-white dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 border-blue-300 dark:border-blue-700"
+                >
+                  Use Demo Credentials
+                </Button>
+              </div>
+            </div>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="username">Username</Label>
