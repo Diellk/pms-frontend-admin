@@ -25,6 +25,7 @@ function getAuthToken(): string {
 function getHeaders(): HeadersInit {
   return {
     "Content-Type": "application/json",
+    "ngrok-skip-browser-warning": "true", // Required for ngrok free tier
     Authorization: `Bearer ${getAuthToken()}`
   }
 }

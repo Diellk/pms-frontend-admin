@@ -73,8 +73,14 @@ All API errors now log detailed information with the ❌ emoji:
 **Console Check:** Look at the 🔧 API Configuration log
 **Solution:** Update `NEXT_PUBLIC_API_BASE_URL` in Netlify environment variables
 
-### Issue 2: Backend Validation Error
-**Symptom:** "The string did not match the expected pattern"
+### Issue 2: ngrok Browser Warning (MOST COMMON)
+**Symptom:** "The string did not match the expected pattern" when using ngrok
+**Cause:** ngrok's free tier shows a browser warning page that returns HTML instead of JSON
+**Solution:** ✅ FIXED - Added `ngrok-skip-browser-warning: true` header to all API calls
+**How to verify:** Check the ❌ error log - if you see HTML in the response, this was the issue
+
+### Issue 3: Backend Validation Error
+**Symptom:** "The string did not match the expected pattern" (after ngrok fix)
 **Console Check:** Look at the ❌ API Error log for the URL and errorData
 **Likely Causes:**
 - Email format validation failing
@@ -82,27 +88,37 @@ All API errors now log detailed information with the ❌ emoji:
 - Missing required fields
 - Invalid enum values
 
-### Issue 3: CORS Issues
+### Issue 4: CORS Issues
 **Symptom:** Network errors, blocked requests
 **Console Check:** Look for CORS-related errors in the console
 **Solution:** Configure CORS on the backend to allow your Netlify domain
 
-### Issue 4: Authentication Issues
+### Issue 5: Authentication Issues
 **Symptom:** 401 Unauthorized errors
 **Console Check:** Look at the Authorization header in the request
 **Solution:** Check if token is being stored and sent correctly
 
 ## Files Modified
 
-### API Files (with logging):
+### API Files (with logging and ngrok headers):
 - `lib/api/auth-api.ts` - Authentication endpoints
+  - ✅ Added request logging
+  - ✅ Added error logging
+  - ✅ Added `ngrok-skip-browser-warning` header
 - `lib/api/user-api.ts` - User management endpoints
+  - ✅ Added request logging
+  - ✅ Added error logging
+  - ✅ Added `ngrok-skip-browser-warning` header
 - `lib/api/financial-api.ts` - Financial endpoints
+  - ✅ Added error logging
+  - ✅ Added `ngrok-skip-browser-warning` header
 - `lib/api/property-api.ts` - Property/room endpoints
+  - ✅ Added error logging
+  - ✅ Added `ngrok-skip-browser-warning` header
 
 ### Layout Files:
 - `app/layout.tsx` - Added ApiConfigLogger component
-- `components/debug/api-config-logger.tsx` - New debug component
+- `components/debug/api-config-logger.tsx` - New debug component with ngrok detection
 
 ## Next Steps
 
@@ -134,10 +150,10 @@ When you want to remove debug logs in production:
 1. Open DevTools → Network tab
 2. Filter by "Fetch/XHR"
 3. Click on failed requests to see:
-   - Request headers
+   - Request headers (should include `ngrok-skip-browser-warning: true`)
    - Request payload
    - Response headers
-   - Response body
+   - Response body (should be JSON, not HTML)
 
 ### Check Application Tab
 1. Open DevTools → Application tab
@@ -145,16 +161,24 @@ When you want to remove debug logs in production:
    - `authToken` - Should contain JWT token
    - `authUser` - Should contain user data
 
-### Test Backend Directly
+### Test Backend Directly with ngrok
 ```bash
-# Test user statistics endpoint
+# Test user statistics endpoint with ngrok header
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-  https://your-api.com/api/admin/users/statistics
+  -H "ngrok-skip-browser-warning: true" \
+  https://your-ngrok-id.ngrok-free.app/api/admin/users/statistics
 
-# Test get all users endpoint
+# Test get all users endpoint with ngrok header
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-  https://your-api.com/api/admin/users
+  -H "ngrok-skip-browser-warning: true" \
+  https://your-ngrok-id.ngrok-free.app/api/admin/users
 ```
+
+### ngrok-Specific Tips
+1. **Always use HTTPS** - ngrok provides both HTTP and HTTPS, use HTTPS
+2. **Check ngrok dashboard** - Visit http://localhost:4040 to see all requests
+3. **Free tier limitations** - ngrok free tier has request limits and requires the skip header
+4. **CORS configuration** - Your backend must allow CORS from your Netlify domain
 
 ## Support
 

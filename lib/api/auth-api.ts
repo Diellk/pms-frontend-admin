@@ -29,6 +29,7 @@ export const authApi = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "true", // Required for ngrok free tier
       },
       body: JSON.stringify(credentials),
     });
@@ -42,6 +43,7 @@ export const authApi = {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${token}`,
+        "ngrok-skip-browser-warning": "true", // Required for ngrok free tier
       },
     });
     return handleResponse<ValidateTokenResponse>(response);
@@ -54,6 +56,7 @@ export const authApi = {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`,
+        "ngrok-skip-browser-warning": "true", // Required for ngrok free tier
       },
     });
     return handleResponse<CurrentUser>(response);

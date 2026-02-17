@@ -37,6 +37,7 @@ async function handleResponse<T>(response: Response): Promise<T> {
 function getHeaders(): HeadersInit {
   const headers: HeadersInit = {
     "Content-Type": "application/json",
+    "ngrok-skip-browser-warning": "true", // Required for ngrok free tier
   };
   const token = getAuthToken();
   if (token) {
